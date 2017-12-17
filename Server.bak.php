@@ -28,7 +28,7 @@ class Server
         $this->serv->start();
     }
     public function onStart($serv){
-        echo "Start666\n";
+        echo "Start\n";
     }
     public function onConnect($serv,$fd,$from_id){
         echo "Client {$fd} connect\n";
@@ -39,26 +39,12 @@ class Server
 
     public function onReceive(swoole_server $serv, $fd, $from_id, $data){
         echo "Get Message From Client {$fd}:{$data}\n";
-        //我新加
-        $data = [
-            'task' => 'task_1',
-            'params' => $data,
-            'fd' => $fd
-        ];
-        $serv->task(json_encode($data));//通过serv的task方法,将这个数据传递过去;task只能传递字符串,所以需要将$data进行json化
+
     }
 
     public function onTask($serv, $task_id, $from_id, $data){
         echo "This Task {$task_id} from Worker {$from_id}\n";
         echo "Data: {$data}\n";
-        //在这里会收到这个数据
-        $data = json_decode($data, true);
-
-        echo "Receive Task: {$task_id} from Worker {$from_id}\n";
-        var_dump($data['params']);
-
-        $serv->send($data['fd'], "爽哥在此");
-        return "Finished";
 
     }
     public function onFinish($serv, $task_id, $data){
